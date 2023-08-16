@@ -4,7 +4,6 @@
 // pull alphabet into class of its own
 // multithreading
 
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace VigCrackerNS
@@ -19,12 +18,12 @@ namespace VigCrackerNS
             0.0149f, 
             0.0271f, 
             0.0432f, 
-            0.12f, 
-            0.023f, 
+            0.1200f, 
+            0.0230f, 
             0.0203f, 
             0.0592f, 
             0.0731f, 
-            0.001f, 
+            0.0010f, 
             0.0069f, 
             0.0398f, 
             0.0260f, 
@@ -34,7 +33,7 @@ namespace VigCrackerNS
             0.0011f, 
             0.0602f, 
             0.0628f, 
-            0.091f, 
+            0.0910f, 
             0.0288f, 
             0.0111f, 
             0.0209f, 
@@ -75,13 +74,65 @@ namespace VigCrackerNS
 
             // }
 
-            string test_cipher = "ETNKTBGZTEELZKXPNIBGTYTFBERMATMFHOXWYKXJNXGMERYKHFHGXITKMHYMAXTFXKBVTGYKHGMBXKMHTGHMAXKAXKYTMAXKMHHDMAXYTFBERURVHOXKXWPTZHGMHFBGGXLHMTBHPTFBLLHNKBDTGLTLBGWBTGMXKKBMHKRTGWWTDHMTMXKKBMHKRTMTZXLAXUXZTGMXTVABGZBGKNKTELVAHHELBGLAXFTKKBXWTEFTGSHCPBEWXKPBMAPAHFLAXEBOXWYKHFHGTYTKFGXTKFTGLYBXEWFBLLHNKBLHFXRXTKLETMXKLAXUXZTGPKBMBGZYHKOTKBHNLIXKBHWBVTELLAXVHGMKBUNMXWMHFVVTEELFTZTSBGXTGWVHNGMKRZXGMEXFTGLXKOXWTLIHNEMKRXWBMHKYHKMAXLMEHNBLLMTKTGWYHKRXTKLPTLAHFXXWBMHKHYMAXFBLLHNKBKNKTEBLM";
+            string test_cipher = "UYETIJBFTYIDWISCPLRDDUWLOFJTKFVLVJIIWXOPPEILRHVFHYXHHTWIMJAEUFVXMWFUUJSAJEXHHHFLVEHAQEHEFCSGVPBQIVMRHORPGZXTHEGKVXPYWPHEFXVOXORXUKLEFPFKFIWWKFFBUYIYFSCPTVHTKFBLUTLEVMSQUYIMIJHQPXITKFFPPKLAWUVBZNIRHOCQIZGKHSHEBESNHMCDBEHTKFHTPVRDVTHRDBSUWCSVPEHTKFBLUTLEVOSUUUEYSBPBHRRTKFKXMCWFUPABBTLSLESEFISLOFRRQRPOJBBAIVROWDVBEZXSHORPTFXHDUWQGZXTHERLXESVHSHEFVRDOPUPUYINKFFLMCIDXQZLHJJRRNHEFVRDVBBAOFXCKFRQIVQSRUVXUKLEBGWQUVHDRXBLWVVTKFGFEVPOJTBLXKLEZICIFYSUVFKXTKAOOPUPIZKHWISIPXWFLUHBEJSLLEZVUFKEWISOBKXHHDCOOVVSEVHKPCSGLTSSFITEUGSZUCCSWSOFHYXAQEOIMCSGVBFBCZKGHSOQPEIEQEHEBEETWISLUYIRHORPPTVAFLGTFIILHGHYFKAEHOHEFDELOBZLOXXHHXOIMJFUWUVXUUMDQPHJBKXEUCSZBLWESBKLVCHCKJBHUYSSHDFXDBWAOMPVIZQSHMTEFSYIOUHEFYSUVFHESVILRHGEJXLTKFBJBYILSFREJDTAOJTQFUSNHFBAPWELRHCKUFXHHXOIMKLEQNOEFCHIWXVFMVLEOJTQFUXHHPHEFIINGISPUFSDXQCKUYIWDMZQPTYTWISKPKGHHTOKEDEHHMDBEISLOBBAIFPDWISIPXAHLMSEFJITWMSAJKAHHSSFUJLOXMRYFKSMDLSQIVGOUOSOQVVFHDHIZJUUDSSPPCSGEZZLHKLEBCIFMKXHHXOIMJLIJISOUZPLWISVXVVESSSQUPLIJIOKECEUUBQLVCHNWHSQPMIRWISJBECMRSSPIVAAVUWOFUSFZBHZIZRGSBOKEDEBXJZAUYIHRVGBBEHSKFKBOKMNWPHEFKELOHFXTJIXSMCOJEKSXERBOCCSKFVBBIHPDTVLVKPEWHCDFKSUWGFLNLRDHSHEFSMGKFOSZCSGZBGPMZHIQHDXXRWTUZWKHKSHRMRRQYMSHORLGZXTRLSBQZXFUPACBCPIQHCKNRLEFPIIEEXIWDFXTYIDGPKKMRYRDTOTNRLUGEZBEFRTKFUOPLRDVISDPKXOPBOINFWTDTERJTOLBBGMBUMDSBYKFCXDRXBXOUGAOMSANRMNDEFBBUJUOWCFDVENGNODBJTEGJAXMCVIJIHQIVPOJXOPPELEUGCLUGELLGHBEKLEOPUXOUQASVZIFULEUGCLUWVOPVBAFIMTSBTBMKLEUUCPFVMFDOMYPEISZFFBCISKHOALWVCOXSOONJLEVBWAJJCOXSPXDBLUUUQXOPSUWVFKZFYRKFOANRQOYFREFIERPTOKEKYRQFREFILEDEHEBEOGREDXTRMDKFVBMGIDPBHLTZXUSTVBTRMDDHOFOZQAOMFFHYXCKBFIFJMTVKIPUDCFRPHNVZGKOZDXUFSKRGTEFIWHRFOKEJXOFLWKHYIFHMHEFIJORUOIMFZEUNCSJEKTKFOKLCIAQEHEFZRSWFDXOUIVHSMQPVHOHTWQILVTPVQEIVESNFRJBJJAFFKXTXVABBBAIVVMRVHEXRWAWJUEUCMNHOCQNLGHVISPBZH";
 
-            KeyFrag KFTest = new(test_cipher.ToList());
+            // KeyFrag KFTest = new(test_cipher.ToList());
 
-            KFTest.Solve();
+            // KFTest.Solve();
 
-            Console.WriteLine("Ciphertext: {0}\nDeviance: {1}\nShift: {2}\n", test_cipher, KFTest.GetDev(), KFTest.GetChar());
+            // Console.WriteLine("Ciphertext: {0}\nDeviance: {1}\nShift: {2}\n", test_cipher, KFTest.GetDev(), KFTest.GetChar());
+
+            // SubSolver SSTest = new(3, test_cipher);
+
+            // SSTest.Eval();
+
+            // Console.WriteLine("Key: {0}\n", SSTest.GetKey());
+
+            Solver solver_test = new(3, 15, test_cipher);
+
+            solver_test.Solve();
+        }
+    }
+
+    class Solver
+    {
+        private int _min_key_len;
+        private int _max_key_len;
+        private string _ciphertext;
+        private bool _silent;
+        private float? _dev;
+        private string? _key;
+
+        public Solver(int min_key_len, int max_key_len, string ciphertext)
+        {
+            this._min_key_len = min_key_len;
+            this._max_key_len = max_key_len;
+            this._ciphertext = ciphertext;
+        }
+
+        public void Solve()
+        {
+            List<SubSolver> sub_solvers = new List<SubSolver>();
+
+            // TODO scrutinize +1
+            foreach (int key_len in Enumerable.Range(_min_key_len, (_max_key_len-_min_key_len+1)))
+                sub_solvers.Add(new(key_len, _ciphertext));
+
+            // spin up subsolvers in parallel for all possible key lengths in indicated range
+            Parallel.ForEach(sub_solvers, subsolver => 
+            {
+                subsolver.Eval();
+            });
+
+            foreach (SubSolver ss in sub_solvers)
+            {
+                Console.WriteLine("Key: {0} Dev: {1}\n", ss.GetKey(), ss.GetDev());
+            }
+        }
+
+        public void Report()
+        {
+
         }
     }
 
@@ -92,6 +143,7 @@ namespace VigCrackerNS
         private readonly string _ciphertext;
         private int _key_len;
         private string? _key;
+        private float? _dev;
 
         public SubSolver(int key_len, string ciphertext)
         {
@@ -104,26 +156,45 @@ namespace VigCrackerNS
             // calculates optimal deviation from standard english letter distribution
             // AND populates key field with ideal key for given key length
 
-            // Enumerable nonsense is a "clean" way to init strings to "" rather than null
-            // not super sold on it tbh...
-            string[] key_sets = Enumerable.Repeat("", _key_len).ToArray();
+            // KeyFrag could be tweaked to make this intermediary list step unnecessary. at present, underlying char list must be presented on construction,
+            // so we have this nast array of lists
+            // also, there has got to be a cleaner way to init a list of objects in a one liner lol
+            List<char>[] key_sets = Enumerable.Range(0, _key_len).Select(_ => new List<char>()).ToArray();
             
             // break ciphertext into "key sets"
             for (int i = 0; i < _ciphertext.Length; i++)
-                key_sets[i % _key_len] += _ciphertext[i];
+                key_sets[i % _key_len].Add(_ciphertext[i]);
 
-            // find ideal "shift" for each key set
+            KeyFrag[] key_frags = key_sets.Select(x => new KeyFrag(x)).ToArray();
 
+            // find ideal "shift" for each key set and track cumulative deviance
+            float cum_dev = 0;
+            string construct_key = "";
+            foreach (KeyFrag frag in key_frags)
+            {
+                frag.Solve();
 
+                // TODO should I do something about the possible null here?
+                // it will never happen, but the compiler doesn't know that I guess
+                cum_dev += (float) frag.GetDev();
+                construct_key += frag.GetChar();
+            }
 
+            _key = construct_key;
+            _dev = cum_dev;
 
-
-            return (float) _key_len;
+            // TODO maybe dont return here in keeping with rest of design...
+            return cum_dev;
         }
 
-        public string GetKey()
+        public string? GetKey()
         {
             return _key;
+        }
+
+        public float? GetDev()
+        {
+            return _dev;
         }
     }
 
@@ -134,7 +205,8 @@ namespace VigCrackerNS
 
         private float? _dev;
         private uint? _shift;
-        private List<char> _letters;
+        // TODO private
+        public List<char> _letters;
 
         public KeyFrag(List<char> letters)
         {
@@ -154,7 +226,7 @@ namespace VigCrackerNS
                 float curr_dev = CalcDev(cur_letters);
 
                 // TODO testing remove
-                Console.WriteLine("shift: {0}, dev: {1}, plaintext:\n{2}\n\n", shift, curr_dev, new string(cur_letters.ToArray()));
+                // Console.WriteLine("shift: {0}, dev: {1}, plaintext:\n{2}\n\n", shift, curr_dev, new string(cur_letters.ToArray()));
                 // TODO end testing
 
                 // first iteration, or found more optimal shift
@@ -168,6 +240,8 @@ namespace VigCrackerNS
         
         public char ShiftChar(char input, uint shift)
         {
+            // shift a character by some amount within the given alphabet. wraps around on "overflow"
+
             uint letter_ascii = (uint) input;
 
             if (letter_ascii < (int) VigCracker.ALPH_MIN || letter_ascii > (int) VigCracker.ALPH_MAX)
@@ -223,6 +297,7 @@ namespace VigCrackerNS
 
         public char? GetChar()
         {
+            // gets the character from the original "encryption" key based on the shift necessarry to "decrypt"
             if (_shift == null)
                 // kinda weak tbh
                 throw new Exception();
@@ -231,7 +306,8 @@ namespace VigCrackerNS
             // _shift is the amt needed to shift the ciphertext BACK into the plaintext (wrapping around), not the amt that the og ciphertext
             // was shifted by. that amt can be derived by the following calculation, but i am confused by the off by one error. I'll have
             // to think about it a little
-            return (char) (VigCracker.ALPH_MAX - _shift + 1);
+            // edit: WHY did it take me so long to figure this out...
+            return ShiftChar(VigCracker.ALPH_MAX, (uint) (VigCracker.ALPH_DIST.Length - _shift + 1));
         }
     }
 }
