@@ -1,0 +1,3 @@
+KeyFrag KFTest = new(new List<char>(){'A', 'B', 'C'});
+
+            Console.WriteLine(KFTest.ShiftChar('A', 25));

@@ -1,13 +1,18 @@
 ﻿// TODO
 // better english distribution
-using System.ComponentModel;
-using System.Dynamic;
+// meaningful custom exception
+// pull alphabet into class of its own
+// multithreading
+
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace VigCrackerNS
 {
     class VigCracker
     {
+        // define charicteristics of alphabet
+        // currently limited to contiguous spans of ASCII range
         public static readonly float[] ALPH_DIST = new float[] 
         {
             0.0812f, 
@@ -37,6 +42,8 @@ namespace VigCrackerNS
             0.0210f, 
             0.0007f 
         };
+        public static readonly char ALPH_MIN = 'A';
+        public static readonly char ALPH_MAX = 'Z';
 
         static void Main(string[] args)
         {
@@ -53,20 +60,28 @@ namespace VigCrackerNS
             // find optimal key length from consituent set shifts
 
             // TODO: remove, testing
-            int min_key_len = 3;
-            int max_key_len = 13;
-            string ciphertext = "this is a test";
+            // int min_key_len = 3;
+            // int max_key_len = 13;
+            // string ciphertext = "this is a test";
 
-            List<SubSolver> solver_list = new();
+            // List<SubSolver> solver_list = new();
 
-            // initialize a set of solvers for all potential key lenghts
-            for (int len = min_key_len; len <= max_key_len; len++)
-                solver_list.Add(new(len, ciphertext));
+            // // initialize a set of solvers for all potential key lenghts
+            // for (int len = min_key_len; len <= max_key_len; len++)
+            //     solver_list.Add(new(len, ciphertext));
 
-            foreach (var solver in solver_list)
-            {
+            // foreach (var solver in solver_list)
+            // {
 
-            }
+            // }
+
+            string test_cipher = "ETNKTBGZTEELZKXPNIBGTYTFBERMATMFHOXWYKXJNXGMERYKHFHGXITKMHYMAXTFXKBVTGYKHGMBXKMHTGHMAXKAXKYTMAXKMHHDMAXYTFBERURVHOXKXWPTZHGMHFBGGXLHMTBHPTFBLLHNKBDTGLTLBGWBTGMXKKBMHKRTGWWTDHMTMXKKBMHKRTMTZXLAXUXZTGMXTVABGZBGKNKTELVAHHELBGLAXFTKKBXWTEFTGSHCPBEWXKPBMAPAHFLAXEBOXWYKHFHGTYTKFGXTKFTGLYBXEWFBLLHNKBLHFXRXTKLETMXKLAXUXZTGPKBMBGZYHKOTKBHNLIXKBHWBVTELLAXVHGMKBUNMXWMHFVVTEELFTZTSBGXTGWVHNGMKRZXGMEXFTGLXKOXWTLIHNEMKRXWBMHKYHKMAXLMEHNBLLMTKTGWYHKRXTKLPTLAHFXXWBMHKHYMAXFBLLHNKBKNKTEBLM";
+
+            KeyFrag KFTest = new(test_cipher.ToList());
+
+            KFTest.Solve();
+
+            Console.WriteLine("Ciphertext: {0}\nDeviance: {1}\nShift: {2}\n", test_cipher, KFTest.GetDev(), KFTest.GetChar());
         }
     }
 
@@ -138,6 +153,10 @@ namespace VigCrackerNS
                 // calculate deviation
                 float curr_dev = CalcDev(cur_letters);
 
+                // TODO testing remove
+                Console.WriteLine("shift: {0}, dev: {1}, plaintext:\n{2}\n\n", shift, curr_dev, new string(cur_letters.ToArray()));
+                // TODO end testing
+
                 // first iteration, or found more optimal shift
                 if (_shift == null || curr_dev < _dev)
                 {
@@ -149,14 +168,52 @@ namespace VigCrackerNS
         
         public char ShiftChar(char input, uint shift)
         {
-            // TODO implement
-            return 'a';
+            uint letter_ascii = (uint) input;
+
+            if (letter_ascii < (int) VigCracker.ALPH_MIN || letter_ascii > (int) VigCracker.ALPH_MAX)
+                // TODO meaningful exception
+                throw new Exception();
+
+            letter_ascii -= (uint) VigCracker.ALPH_MIN;
+            letter_ascii += shift;
+            letter_ascii %= (uint) VigCracker.ALPH_DIST.Length;
+            letter_ascii += (uint) VigCracker.ALPH_MIN;
+
+            return (char) letter_ascii;
         }
 
         public float CalcDev(List<char> letters)
         {
-            // calculate deviation
-            throw new NotImplementedException();
+            // calculates the deviation of a given set of characters from the standard alphabet distribution
+
+            // calculate distribution
+            float[] dist = Enumerable.Repeat(0.0f, VigCracker.ALPH_DIST.Length).ToArray();
+
+            foreach (int letter_ascii in letters.Select(x => (int) x))
+            {
+                if (letter_ascii < (int) VigCracker.ALPH_MIN || letter_ascii > (int) VigCracker.ALPH_MAX)
+                    // TODO meaningful exception
+                    throw new Exception();
+
+                // increase count of obsered letter
+                dist[letter_ascii - VigCracker.ALPH_MIN] += 1.0f;
+            }
+
+            // normalize distribution
+            float sum = 0;
+            foreach (float f in dist)
+                sum += f;
+
+            for (int i = 0; i < VigCracker.ALPH_DIST.Length; i++)
+                dist[i] /= sum;
+
+            // calculate deviance from key distribution
+            // curently using sum of absolute distance from the actual. could be tweeked, but im no statistician lol
+            float sum_dev = 0.0f;
+            for (int i = 0; i < VigCracker.ALPH_DIST.Length; i++)
+                sum_dev += Math.Abs(VigCracker.ALPH_DIST[i] - dist[i]);
+
+            return sum_dev;
         }
 
         public float? GetDev()
@@ -164,11 +221,17 @@ namespace VigCrackerNS
             return _dev;
         }
 
-        public char? getChar()
+        public char? GetChar()
         {
-            // TODO calculate character based on shift and return
-            // remove temp code
-            return 'a';
+            if (_shift == null)
+                // kinda weak tbh
+                throw new Exception();
+
+            // TODO SCRUTINIZE THIS
+            // _shift is the amt needed to shift the ciphertext BACK into the plaintext (wrapping around), not the amt that the og ciphertext
+            // was shifted by. that amt can be derived by the following calculation, but i am confused by the off by one error. I'll have
+            // to think about it a little
+            return (char) (VigCracker.ALPH_MAX - _shift + 1);
         }
     }
 }
